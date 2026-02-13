@@ -24,6 +24,8 @@
             margin: 0;
             padding-top: 50px;
             touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         /* ボタンを横に並べるための箱 */
@@ -64,7 +66,7 @@
         .watermelon { background-color: #2ed573; }
         .CZ { background-color: #ffa502; }
         .direct { background-color: #FF00FF; }　
-        .pullback { background-color: #800080; }
+        .pullback { background-color: #A102FD; }
 
         .sana-reset-btn {
             padding: 10px 20px;
@@ -133,11 +135,15 @@
         let counts = JSON.parse(localStorage.getItem('slotCounts')) || [0, 0, 0, 0, 0, 0, 0];
 
         // 画面表示を更新する関数
+        let counts = JSON.parse(localStorage.getItem('slotCounts')) || [0, 0, 0, 0, 0, 0, 0];
+        let isMinusMode = false;
+
         function updateDisplay() {
-            document.getElementById('display1').innerText = counts[1];
-            document.getElementById('display2').innerText = counts[2];
-            document.getElementById('display3').innerText = counts[3];
-            document.getElementById('display4').innerText = counts[4];
+            // すべてのディスプレイ(1〜6)を更新
+            for (let i = 1; i <= 6; i++) {
+                const el = document.getElementById('display' + i);
+                if (el) el.innerText = counts[i];
+            }
             localStorage.setItem('slotCounts', JSON.stringify(counts));
         }
 
@@ -182,8 +188,8 @@
         function resetsana() {
             const result = confirm('さなモードでしたか？');
             if (result) {
-                counts[3] = 0;
                 counts[4] = 0;
+                counts[5] = 0;
                 updateDisplay();
             } else {
                 counts[1] = counts[1] + counts[4];
@@ -200,6 +206,7 @@
 </body>
 
 </html>
+
 
 
 
