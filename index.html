@@ -4,16 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>3役カウンター</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon.png">
-    <script>
-      // ブラウザに「これはPWAですよ」と教えるおまじない
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-      }
-    </script>
     <style>
-        /* 【CSS】レイアウトとデザイン */
         body {
             font-family: sans-serif;
             display: flex;
@@ -22,124 +13,120 @@
             background-color: #1a1a1a;
             color: white;
             margin: 0;
-            padding-top: 50px;
+            padding: 40px 10px;
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
         }
 
-        /* ボタンを横に並べるための箱 */
         .container {
             display: flex;
-            gap: 30px; /* ボタン同士の間隔 */
-            margin-top: 50px;
-            flex-wrap: wrap; /* 画面が狭い時に折り返す設定 */
+            gap: 20px;
+            flex-wrap: wrap;
             justify-content: center;
+            max-width: 400px;
         }
 
         .counter-unit {
             text-align: center;
+            width: 100px;
         }
 
         .count-display {
-            font-size: 48px;
-            margin-bottom: 10px;
+            font-size: 40px;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
 
         .btn {
             width: 100px;
-            height: 100px;
-            font-size: 16px;
-            border-radius: 20%;
+            height: 80px;
+            font-size: 14px;
+            border-radius: 15px;
             border: none;
             color: white;
             font-weight: bold;
-            box-shadow: 0 5px #333;
+            box-shadow: 0 4px #333;
+            cursor: pointer;
         }
 
         .btn:active {
-            transform: translateY(4px);
+            transform: translateY(2px);
             box-shadow: 0 1px #333;
         }
 
-        /* 子役ごとの色分け（CSSの役割！） */
+        /* 色設定 */
         .watermelon { background-color: #2ed573; }
         .CZ { background-color: #ffa502; }
-        .direct { background-color: #FF00FF; }　
+        .direct { background-color: #FF00FF; }
         .pullback { background-color: #A102FD; }
 
-        .sana-reset-btn {
-            padding: 10px 20px;
-            background: #00FFFF;
-            color: #ccc;
-            border: none;
+        /* ★ここがポイント：カウンターと下のボタンの間隔 */
+        .reset-area {
+            margin-top: 60px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
         }
 
-        .reset-btn {
-            padding: 10px 20px;
-            background: #b33939;
-            color: #ccc;
+        .mode-btn {
+            width: 240px;
+            padding: 15px;
+            border-radius: 10px;
             border: none;
+            color: white;
+            font-weight: bold;
+            background: #555;
         }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .sana-reset-btn, .reset-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .sana-reset-btn { background: #008b8b; }
+        .reset-btn { background: #b33939; }
     </style>
-    
 </head>
 <body>
 
     <div class="container">
-        <div class="counter-unit">
-            <div class="count-display" id="display1">0</div>
-            <button class="btn watermelon" onclick="add(1)">スイカ</button>
-        </div>
-
-        <div class="counter-unit">
-            <div class="count-display" id="display2">0</div>
-            <button class="btn CZ" onclick="add(2)">CZ</button>
-        </div>
-
-        <div class="counter-unit">
-            <div class="count-display" id="display3">0</div>
-            <button class="btn direct" onclick="add(3)">AT直撃</button>
-        </div>
-
-        <div class="counter-unit">
-            <div class="count-display" id="display4">0</div>
-            <button class="btn sana watermelon" onclick="add(4)">さなスイカ</button>
-        </div>
-
-        <div class="counter-unit">
-            <div class="count-display" id="display5">0</div>
-            <button class="btn sana CZ" onclick="add(5)">さなCZ</button>
-        </div>
-
-        <div class="counter-unit">
-            <div class="count-display" id="display6">0</div>
-            <button class="btn pullback" onclick="add(6)">引き戻し</button>
-        </div>
+        <div class="counter-unit"><div class="count-display" id="display1">0</div><button class="btn watermelon" onclick="add(1)">スイカ</button></div>
+        <div class="counter-unit"><div class="count-display" id="display2">0</div><button class="btn CZ" onclick="add(2)">CZ</button></div>
+        <div class="counter-unit"><div class="count-display" id="display3">0</div><button class="btn direct" onclick="add(3)">AT直撃</button></div>
+        <div class="counter-unit"><div class="count-display" id="display4">0</div><button class="btn watermelon" onclick="add(4)">さなスイカ</button></div>
+        <div class="counter-unit"><div class="count-display" id="display5">0</div><button class="btn CZ" onclick="add(5)">さなCZ</button></div>
+        <div class="counter-unit"><div class="count-display" id="display6">0</div><button class="btn pullback" onclick="add(6)">引き戻し</button></div>
     </div>
 
     <div class="reset-area">
-        <button id="mode-btn" class="action-btn" style="background: #555; width: 220px;" onclick="toggleMode()">
+        <button id="mode-btn" class="mode-btn" onclick="toggleMode()">
             現在のモード：増やす (＋)
         </button>
         
-        <div style="display: flex; gap: 10px;">
+        <div class="control-buttons">
             <button class="sana-reset-btn" onclick="resetsana()">AT当選</button>
             <button class="reset-btn" onclick="resetAll()">全リセット</button>
-        <div>
+        </div>
     </div>
 
-
     <script>
-        // データを配列（まとまり）で管理する
-        let counts = JSON.parse(localStorage.getItem('slotCounts')) || [0, 0, 0, 0, 0, 0, 0];
-
-        // 画面表示を更新する関数
+        // 重複を削除して整理
         let counts = JSON.parse(localStorage.getItem('slotCounts')) || [0, 0, 0, 0, 0, 0, 0];
         let isMinusMode = false;
 
         function updateDisplay() {
-            // すべてのディスプレイ(1〜6)を更新
             for (let i = 1; i <= 6; i++) {
                 const el = document.getElementById('display' + i);
                 if (el) el.innerText = counts[i];
@@ -147,31 +134,22 @@
             localStorage.setItem('slotCounts', JSON.stringify(counts));
         }
 
-        // 数字を増やす関数（引数 num でどのボタンか判断する）
-        let isMinusMode = false; // 最初は「増やすモード」
-
         function toggleMode() {
-            isMinusMode = !isMinusMode; // trueとfalseを入れ替える
+            isMinusMode = !isMinusMode;
             const btn = document.getElementById('mode-btn');
-    
             if (isMinusMode) {
                 btn.innerText = "現在のモード：減らす (－)";
-                btn.style.background = "#d32f2f"; // 減らす時は赤っぽくして警告
+                btn.style.background = "#d32f2f";
             } else {
                 btn.innerText = "現在のモード：増やす (＋)";
-            btn.style.background = "#555";
+                btn.style.background = "#555";
             }
         }
 
-        // 既存のadd関数を書き換える
         function add(num) {
             if (isMinusMode) {
-                // 減らすモードの時（0未満にはならないようにする）
-                if (counts[num] > 0) {
-                    counts[num]--;
-                }
+                if (counts[num] > 0) counts[num]--;
             } else {
-                // 増やすモードの時
                 counts[num]++;
             }
             updateDisplay();
@@ -188,31 +166,16 @@
         function resetsana() {
             const result = confirm('さなモードでしたか？');
             if (result) {
-                counts[4] = 0;
-                counts[5] = 0;
-                updateDisplay();
+                counts[4] = 0; counts[5] = 0;
             } else {
-                counts[1] = counts[1] + counts[4];
-                counts[2] = counts[2] + counts[5];
-                counts[4] = 0;
-                counts[5] = 0;
-                updateDisplay();
+                counts[1] += counts[4];
+                counts[2] += counts[5];
+                counts[4] = 0; counts[5] = 0;
             }
+            updateDisplay();
         }
 
-        // 起動時に表示
         updateDisplay();
     </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
