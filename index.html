@@ -66,17 +66,8 @@
         .direct { background-color: #FF00FF; }
         .pullback { background-color: #00FFFF; }
 
-        .move-btn {
-            background: #333;
-            color: #aaa;
-            border: 1px solid #555;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 13px;
-        }
-
         .sana-reset-btn {
-            background: #333;
+            background: #00FFFF;
             color: #aaa;
             border: 1px solid #555;
             border-radius: 5px;
@@ -129,8 +120,10 @@
     </div>
 
     <div class="reset-area">
-        <button class="reset-btn" onclick="resetAll()">全リセット</button>
+        <button class="mode-btn" onclick="togglemode()"></button>
         <button class="sana-reset-btn" onclick="resetsana()">AT当選</button>
+        <button class="reset-btn" onclick="resetAll()">全リセット</button>
+        
     </div>
 
 
@@ -148,8 +141,32 @@
         }
 
         // 数字を増やす関数（引数 num でどのボタンか判断する）
+        let isMinusMode = false; // 最初は「増やすモード」
+
+        function toggleMode() {
+            isMinusMode = !isMinusMode; // trueとfalseを入れ替える
+            const btn = document.getElementById('mode-btn');
+    
+            if (isMinusMode) {
+                btn.innerText = "現在のモード：減らす (－)";
+                btn.style.background = "#d32f2f"; // 減らす時は赤っぽくして警告
+            } else {
+                btn.innerText = "現在のモード：増やす (＋)";
+            btn.style.background = "#555";
+            }
+        }
+
+        // 既存のadd関数を書き換える
         function add(num) {
-            counts[num]++;
+            if (isMinusMode) {
+                // 減らすモードの時（0未満にはならないようにする）
+                if (counts[num] > 0) {
+                    counts[num]--;
+                }
+            } else {
+                // 増やすモードの時
+                counts[num]++;
+            }
             updateDisplay();
             if (navigator.vibrate) navigator.vibrate(10);
         }
@@ -182,6 +199,7 @@
 </body>
 
 </html>
+
 
 
 
