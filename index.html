@@ -63,6 +63,8 @@
         /* 子役ごとの色分け（CSSの役割！） */
         .watermelon { background-color: #2ed573; }
         .CZ { background-color: #ffa502; }
+        .direct { background-color: #FF00FF; }
+        .pullback { background-color: #00FFFF; }
 
         .move-btn {
             background: #333;
@@ -106,18 +108,18 @@
         </div>
 
         <div class="counter-unit">
-            <div class="count-display" id="display3">0</div>
-            <button class="btn sana watermelon" onclick="add(3)">さなスイカ</button>
-        </div>
-
-        <div class="counter-unit">
             <div class="count-display" id="display4">0</div>
-            <button class="btn sana CZ" onclick="add(4)">さなCZ</button>
+            <button class="btn sana watermelon" onclick="add(4)">さなスイカ</button>
         </div>
 
         <div class="counter-unit">
             <div class="count-display" id="display5">0</div>
-            <button class="btn direct" onclick="add(5)">AT直撃</button>
+            <button class="btn sana CZ" onclick="add(5)">さなCZ</button>
+        </div>
+
+        <div class="counter-unit">
+            <div class="count-display" id="display5">0</div>
+            <button class="btn direct" onclick="add(3)">AT直撃</button>
         </div>
 
         <div class="counter-unit">
@@ -166,10 +168,10 @@
                 counts[4] = 0;
                 updateDisplay();
             } else {
-                counts[1] = counts[1] + counts[3];
-                counts[2] = counts[2] + counts[4];
-                counts[3] = 0;
+                counts[1] = counts[1] + counts[4];
+                counts[2] = counts[2] + counts[5];
                 counts[4] = 0;
+                counts[5] = 0;
                 updateDisplay();
             }
         }
@@ -180,4 +182,5 @@
 </body>
 
 </html>
+
 
