@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3役カウンター</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <script>
+      // ブラウザに「これはPWAですよ」と教えるおまじない
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
+    <style>
+        /* 【CSS】レイアウトとデザイン */
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #1a1a1a;
+            color: white;
+            margin: 0;
+            padding-top: 50px;
+            touch-action: manipulation;
+        }
+
+        /* ボタンを横に並べるための箱 */
+        .container {
+            display: flex;
+            gap: 20px; /* ボタン同士の間隔 */
+        }
+
+        .counter-unit {
+            text-align: center;
+        }
+
+        .count-display {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            width: 100px;
+            height: 100px;
+            font-size: 16px;
+            border-radius: 20%;
+            border: none;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px #333;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px #333;
+        }
+
+        /* 子役ごとの色分け（CSSの役割！） */
+        .watermelon { background-color: #2ed573; }
+        .CZ { background-color: #ffa502; }
+
+        .move-btn {
+            background: #333;
+            color: #aaa;
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+
+        .sana-reset-btn {
+            background: #333;
+            color: #aaa;
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+
+        .reset-btn {
+            margin-top: 100px;
+            padding: 10px 20px;
+            background: #b33939;
+            color: #ccc;
+            border: none;
+        }
+    </style>
+    
+</head>
+<body>
+
+    <div class="container">
+        <div class="counter-unit">
+            <div class="count-display" id="display1">0</div>
+            <button class="btn watermelon" onclick="add(1)">スイカ</button>
+        </div>
+
+        <div class="counter-unit">
+            <div class="count-display" id="display2">0</div>
+            <button class="btn CZ" onclick="add(2)">CZ</button>
+        </div>
+
+        <div class="counter-unit">
+            <div class="count-display" id="display3">0</div>
+            <button class="btn sana watermelon" onclick="add(3)">さなスイカ</button>
+        </div>
+
+        <div class="counter-unit">
+            <div class="count-display" id="display4">0</div>
+            <button class="btn sana CZ" onclick="add(4)">さなCZ</button>
+        </div>
+
+        <div class="counter-unit">
+            <div class="count-display" id="display5">0</div>
+            <button class="btn direct" onclick="add(5)">AT直撃</button>
+        </div>
+
+        <div class="counter-unit">
+            <div class="count-display" id="display6">0</div>
+            <button class="btn pullback" onclick="add(6)">引き戻し</button>
+        </div>
+    </div>
+
+    <div class="reset-area">
+        <button class="reset-btn" onclick="resetAll()">全リセット</button>
+        <button class="sana-reset-btn" onclick="resetsana()">AT当選</button>
+    </div>
+
+
+    <script>
+        // データを配列（まとまり）で管理する
+        let counts = JSON.parse(localStorage.getItem('slotCounts')) || [0, 0, 0, 0, 0, 0, 0];
+
+        // 画面表示を更新する関数
+        function updateDisplay() {
+            document.getElementById('display1').innerText = counts[1];
+            document.getElementById('display2').innerText = counts[2];
+            document.getElementById('display3').innerText = counts[3];
+            document.getElementById('display4').innerText = counts[4];
+            localStorage.setItem('slotCounts', JSON.stringify(counts));
+        }
+
+        // 数字を増やす関数（引数 num でどのボタンか判断する）
+        function add(num) {
+            counts[num]++;
+            updateDisplay();
+            if (navigator.vibrate) navigator.vibrate(10);
+        }
+
+        function resetAll() {
+            if (confirm('すべてリセットしますか？')) {
+                counts = [0, 0, 0, 0, 0, 0, 0];
+                updateDisplay();
+            }
+        }
+
+        function resetsana() {
+            const result = confirm('さなモードでしたか？');
+            if (result) {
+                counts[3] = 0;
+                counts[4] = 0;
+                updateDisplay();
+            } else {
+                counts[1] = counts[1] + counts[3];
+                counts[2] = counts[2] + counts[4];
+                counts[3] = 0;
+                counts[4] = 0;
+                updateDisplay();
+            }
+        }
+
+        // 起動時に表示
+        updateDisplay();
+    </script>
+</body>
+</html>
